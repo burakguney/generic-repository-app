@@ -18,6 +18,20 @@ router.post("/", async (req, res) => {
     })
 });
 
+router.put("/:id", async (req, res) => {
+    const { turkish, english, hint } = req.body;
+
+    const column = ['turkish', 'english', 'hint'];
+    const value = [turkish, english, hint];
+    const id = req.params.id;
+
+    await repository.update(wordTable, column, value, id).then(result => {
+        res.status(201).send(result);
+    }).catch(error => {
+        res.status(400).send(error.message);
+    })
+});
+
 router.get("/", async (req, res) => {
     await repository.getAll(wordTable).then(result => {
         res.status(200).send(result);
@@ -37,13 +51,23 @@ router.get("/:id", async (req, res) => {
     })
 });
 
-router.get("/getByTurkish", async (req, res) => {
+router.post("/getByTurkish", async (req, res) => {
     const { turkish } = req.body;
 
     const column = 'turkish';
     const value = turkish;
 
     await repository.getByColumn(wordTable, column, value).then(result => {
+        res.status(200).send(result);
+    }).catch(error => {
+        res.status(400).send(error.message);
+    })
+});
+
+router.delete("/:id", async (req, res) => {
+    const id = req.params.id;
+
+    await repository.deleteById(wordTable, id).then(result => {
         res.status(200).send(result);
     }).catch(error => {
         res.status(400).send(error.message);
